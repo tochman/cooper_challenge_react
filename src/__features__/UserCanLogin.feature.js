@@ -1,3 +1,5 @@
+require("../__mocks__/mocksConfig");
+
 describe("User attempts to login", () => {
   beforeAll(async () => {
     jest.setTimeout(10000);
