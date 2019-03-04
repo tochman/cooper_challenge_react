@@ -8,6 +8,7 @@ describe("User attempts to login", () => {
 
   beforeEach(async () => {
     await page.reload();
+    await page.waitFor(5000);
   });
 
   it("with valid credentials", async () => {

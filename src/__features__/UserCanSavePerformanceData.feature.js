@@ -8,6 +8,7 @@ describe("User attempts save data", () => {
 
   beforeEach(async () => {
     await page.reload();
+    await page.waitFor(5000);
     await page.click("#login");
     await page.type('input[id="email"]', "johndoe@mail.com");
     await page.type('input[id="password"]', "password");
