@@ -3,6 +3,7 @@ beforeAll(async () => {
   const createResponse = (path, params, request) => {
     let response;
     switch (path) {
+      default:
       case "sign_in":
         let user;
         user = MockResponses.mockedUserResponses.find(user => {
@@ -10,11 +11,19 @@ beforeAll(async () => {
         });
         response = user || MockResponses.missingUserResponse;
         return response;
+      case "performance_data":
+        if (request.method() === "POST") {
+          response = MockResponses.savingEntryResponse;
+        } else if (request.method() === "GET") {
+          response = MockResponses.performanceDataIndexResponse;
+        }
+        return response;
     }
   };
 
   const requests = {
-    sign_in: {}
+    sign_in: {},
+    performance_data: {}
   };
 
   await page.setRequestInterception(true);
@@ -25,7 +34,7 @@ beforeAll(async () => {
       .split("/")
       .pop()
       .split("?")[0];
-    console.log("Making request to: " + requestedEndpoint);
+    // console.log("Making request to: " + requestedEndpoint);
     if (requests[requestedEndpoint]) {
       params = interceptedRequest.postData();
       interceptedRequest.respond(

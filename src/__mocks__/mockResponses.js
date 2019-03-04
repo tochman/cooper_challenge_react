@@ -19,6 +19,13 @@ module.exports = {
       })
     }
   ],
+  savingEntryResponse: {
+    status: 200,
+    headers: {},
+    body: JSON.stringify({
+      message: "all good"
+    })
+  },
 
   missingUserResponse: {
     status: 401,
@@ -26,6 +33,36 @@ module.exports = {
     body: JSON.stringify({
       success: false,
       errors: ["Invalid login credentials. Please try again."]
+    })
+  },
+
+  performanceDataIndexResponse: {
+    status: 200,
+    headers: {},
+    body: JSON.stringify({
+      entries: [
+        {
+          data: {
+            message: "Below Average"
+          },
+          id: 1,
+          user_id: 1
+        },
+        {
+          data: {
+            message: "Average"
+          },
+          id: 2,
+          user_id: 1
+        },
+        {
+          data: {
+            message: "Above Average"
+          },
+          id: 3,
+          user_id: 1
+        }
+      ]
     })
   }
 };

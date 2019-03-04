@@ -20,11 +20,25 @@ const saveData = result => {
         }
       )
       .then(response => {
-        if (response.data.message === "all good") {
-          storeAuthHeaders(response);
-        }
+        storeAuthHeaders(response);
         resolve(response.data.message);
       });
   });
 };
-export { saveData };
+
+const getData = () => {
+  const headers = JSON.parse(sessionStorage.getItem(["credentials"]));
+  const path = apiUrl + "/performance_data";
+  return new Promise((resolve, reject) => {
+    axios
+      .get(path, {
+        headers: headers
+      })
+      .then(response => {
+        storeAuthHeaders(response);
+        resolve(response);
+      });
+  });
+};
+
+export { saveData, getData };
