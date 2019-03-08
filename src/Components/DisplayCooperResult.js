@@ -15,8 +15,13 @@ class DisplayCooperResult extends Component {
 
   async saveCooperData() {
     const result = this.calculate();
+    const values = {
+      gender: this.props.gender,
+      distance: this.props.distance,
+      age: this.props.age
+    }
     try {
-      await saveData(result);
+      await saveData(result, values);
       this.props.entryHandler();
     } catch (error) {
       console.log(error);
@@ -30,7 +35,8 @@ class DisplayCooperResult extends Component {
     if (this.props.authenticated === true && this.props.entrySaved === false) {
       saveButton = (
         <>
-          <Button id="save-result" onClick={this.saveCooperData.bind(this)}>
+          <Button id="save-result"
+            onClick={this.saveCooperData.bind(this)}>
             Save entry
           </Button>
         </>

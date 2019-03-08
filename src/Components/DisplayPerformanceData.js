@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Message } from 'semantic-ui-react';
+import { Bar } from 'react-chartjs-2';
 import { getData } from "../Modules/PerformanceData";
 
 class DisplayPerformanceData extends Component {
@@ -27,18 +27,38 @@ class DisplayPerformanceData extends Component {
       this.getPerformanceData();
     }
     if (this.state.performanceData != null) {
+      const distances = []
+      const labels = []
+      this.state.performanceData.forEach(entry => {
+        distances.push(entry.data.distance)
+        labels.push(entry.data.message)
+      })
+      const data = {
+        datasets: [{
+          data: distances
+        }],
+
+        // These labels appear in the legend and in the tooltips when hovering different arcs
+        labels: labels
+      };
+
       dataIndex = (
-        <Message>
-          {this.state.performanceData.map(item => {
-            return <div key={item.id}>{item.data.message}</div>;
-          })}
-        </Message>
+        <>
+          <Bar ref='chart' data={data} />
+        </>
       )
-    } 
+
+
+    }
+
+
+
+
 
     return (
       <div>
         {dataIndex}
+        
       </div>
     );
   }
