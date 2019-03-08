@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Message } from 'semantic-ui-react';
 import { getData } from "../Modules/PerformanceData";
 
 class DisplayPerformanceData extends Component {
@@ -27,15 +28,19 @@ class DisplayPerformanceData extends Component {
     }
     if (this.state.performanceData != null) {
       dataIndex = (
-        <div>
+        <Message>
           {this.state.performanceData.map(item => {
             return <div key={item.id}>{item.data.message}</div>;
           })}
-        </div>
-      );
-    }
+        </Message>
+      )
+    } 
 
-    return <div>{dataIndex}</div>;
+    return (
+      <div>
+        {dataIndex}
+      </div>
+    );
   }
 }
 export default DisplayPerformanceData;

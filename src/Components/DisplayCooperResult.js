@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import cooperCalculator from "../Modules/Coopercalculator";
 import { saveData } from "../Modules/PerformanceData";
+import { Message, Button } from 'semantic-ui-react';
+
 
 class DisplayCooperResult extends Component {
   calculate() {
@@ -28,9 +30,9 @@ class DisplayCooperResult extends Component {
     if (this.props.authenticated === true && this.props.entrySaved === false) {
       saveButton = (
         <>
-          <button id="save-result" onClick={this.saveCooperData.bind(this)}>
+          <Button id="save-result" onClick={this.saveCooperData.bind(this)}>
             Save entry
-          </button>
+          </Button>
         </>
       );
     } else if (
@@ -38,22 +40,22 @@ class DisplayCooperResult extends Component {
       this.props.entrySaved === true
     ) {
       saveButton = (
-        <>
+        <Message>
           <p>Your entry was saved</p>
-        </>
+        </Message>
       );
     }
 
     if (this.props.age !== "" && this.props.distance !== "") {
       results = (
-        <>
+        <Message>
           <p>
             {this.props.age} y/o {this.props.gender} running{" "}
             {this.props.distance} meters.
           </p>
           <p>Result: {this.calculate()}</p>
           {saveButton}
-        </>
+        </Message>
       );
     }
     return <div>{results}</div>;
