@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const apiUrl = "https://mta-cooper-api.herokuapp.com/api/v1";
-// const apiUrl = "http://localhost:3000/api/v1";
+// const apiUrl = "https://mta-cooper-api.herokuapp.com/api/v1";
+const apiUrl = "http://localhost:3000/api/v1";
 
 const authenticate = async (email, password) => {
   const path = apiUrl + "/auth/sign_in";
