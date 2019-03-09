@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import cooperCalculator from "../Modules/Coopercalculator";
 import { saveData } from "../Modules/PerformanceData";
-import { Message, Button } from 'semantic-ui-react';
+import { Message, Button, Grid } from 'semantic-ui-react';
 
 
 class DisplayCooperResult extends Component {
@@ -46,9 +46,9 @@ class DisplayCooperResult extends Component {
       this.props.entrySaved === true
     ) {
       saveButton = (
-        <Message>
+        <>
           <p>Your entry was saved</p>
-        </Message>
+        </>
       );
     }
 
@@ -64,7 +64,18 @@ class DisplayCooperResult extends Component {
         </Message>
       );
     }
-    return <div>{results}</div>;
+    return (
+      <>
+        <Grid columns={1} doubling stackable>
+          <Grid.Column>
+            {results}
+
+          </Grid.Column>
+        </Grid>
+      </>
+
+    )
+
   }
 }
 

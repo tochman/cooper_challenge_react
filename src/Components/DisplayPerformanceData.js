@@ -1,6 +1,11 @@
 import React, { Component } from "react";
-import { Bar } from 'react-chartjs-2';
+import '../Modules/ChartExtensions'
+import { Line, Doughnut } from 'react-chartjs-2';
+import { Grid } from 'semantic-ui-react'
+
 import { getData } from "../Modules/PerformanceData";
+
+
 
 class DisplayPerformanceData extends Component {
   constructor(props) {
@@ -20,6 +25,25 @@ class DisplayPerformanceData extends Component {
     });
   }
 
+  getCount(collection, value) {
+    let count = 0;
+    collection.forEach(entry => {
+      count += entry.data.message === value ? 1 : 0;
+    })
+    return count;
+  }
+
+  getLabels(collection) {
+    let uniqueLabels = [];
+    collection.forEach(entry => {
+      if (entry.data.message && uniqueLabels.indexOf(entry.data.message) === -1) {
+        uniqueLabels.push(entry.data.message);
+      }
+    })
+    return uniqueLabels;
+  }
+
+
   render() {
     let dataIndex;
 
@@ -33,33 +57,59 @@ class DisplayPerformanceData extends Component {
         distances.push(entry.data.distance)
         labels.push(entry.data.message)
       })
-      const data = {
-        datasets: [{
-          data: distances
-        }],
 
-        // These labels appear in the legend and in the tooltips when hovering different arcs
-        labels: labels
+      let uniqueLabels = this.getLabels(this.state.performanceData);
+      let dData = [];
+
+      uniqueLabels.forEach(label => {
+        dData.push(this.getCount(this.state.performanceData, label));
+      })
+
+      const dataDoughnut = {
+        labels: uniqueLabels,
+        datasets: [{
+          data: dData,
+          backgroundColor: [
+            '#FF6384',
+            '#36A2EB',
+            '#FF6344',
+            '#36A1EB',
+            '#FF6384',
+          ],
+        }],
+        text: {
+          content: 'Cooper Results',
+          fontSize: 2,
+          color: 'grey'
+        }
+      }
+
+      const dataLine = {
+        datasets: [{
+          data: distances,
+          label: 'Your stored runs',
+        }],
+        labels: labels,
       };
 
       dataIndex = (
         <>
-          <Bar ref='chart' data={data} />
+          <Grid columns={2} doubling stackable>
+            <Grid.Column>
+              <Line ref='chart' data={dataLine} />
+            </Grid.Column>
+            <Grid.Column>
+              <Doughnut data={dataDoughnut} />
+            </Grid.Column>
+          </Grid>
         </>
       )
-
-
     }
 
-
-
-
-
     return (
-      <div>
+      <>
         {dataIndex}
-        
-      </div>
+      </>
     );
   }
 }

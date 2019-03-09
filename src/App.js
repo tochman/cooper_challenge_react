@@ -5,7 +5,7 @@ import LoginForm from "./Components/LoginForm";
 import InputFields from "./Components/InputFields";
 import { authenticate } from "./Modules/Auth";
 import DisplayPerformanceData from "./Components/DisplayPerformanceData";
-import { Container, Header, Button, Message } from 'semantic-ui-react'
+import { Container, Header, Button, Message, Modal, Grid } from 'semantic-ui-react'
 class App extends Component {
   constructor(props) {
     super(props);
@@ -62,20 +62,20 @@ class App extends Component {
         <Message positive>
           <p>Hi {user}</p>
         </Message>
-        
+
       );
       if (this.state.renderIndex === true) {
         performanceDataIndex = (
           <>
-            <DisplayPerformanceData
-              updateIndex={this.state.updateIndex}
-              indexUpdated={this.indexUpdated.bind(this)}
-            />
             <Button
               primary
               onClick={() => this.setState({ renderIndex: false })}>
               Hide past entries
             </Button>
+            <DisplayPerformanceData
+              updateIndex={this.state.updateIndex}
+              indexUpdated={this.indexUpdated.bind(this)}
+            />
           </>
         );
       } else {
@@ -102,13 +102,25 @@ class App extends Component {
       } else {
         renderLogin = (
           <>
-            <Button
-              primary
-              id="login"
-              onClick={() => this.setState({ renderLoginForm: true })}
-            >
-              Login
-            </Button>
+            <Modal
+              basic size='small'
+              trigger={
+                <Button
+                  primary
+                  id="login"
+
+                >
+                  Login
+              </Button>
+              }>
+              <Modal.Content>
+                <LoginForm
+                  loginHandler={this.onLogin.bind(this)}
+                  inputChangeHandler={this.onChange.bind(this)}
+                />
+              </Modal.Content>
+            </Modal>
+
             <p>{this.state.message}</p>
           </>
         );
@@ -135,7 +147,12 @@ class App extends Component {
             entrySaved={this.state.entrySaved}
             entryHandler={this.entryHandler.bind(this)}
           />
-          {performanceDataIndex}
+          <Grid columns={1} doubling stackable>
+            <Grid.Column>
+              {performanceDataIndex}
+            </Grid.Column>
+          </Grid>
+
         </Container>
 
       </div>
