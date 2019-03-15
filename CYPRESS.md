@@ -58,7 +58,7 @@ Remember - all it blocks go inside the describe.
 
 Before we run our tests, we need to keep our localhost active by `npm start`.
 
-Let's launch cypress by typing `yarn run cy:open`, and a cypress window will pop open with a list(just 1 file). Select and run the test file.
+Let's launch cypress by typing `npm run cy:open`, and a cypress window will pop open with a list(just 1 file). Select and run the test file.
 
 A new Chrome window will open, and our test will go green! A good idea at this point would be to open console and click around the browswer to explore tools provided by cypress.
 
@@ -104,6 +104,9 @@ it('User can login successfully',() => {
     ... // our test code
 })
 ```
+Now if you are wondering how you should stub the API response, cypress has a pretty user friendly way of getting you that information:
+
+![](api_response.gif)
 
 `/fixtures/login.json` looks like this.
 
@@ -130,7 +133,7 @@ We can add all the information in here, but since reponses can be really big, we
 
 Now if we relaunch cypress and run the tests, a console check will show us that we have successfully stubbed the API reponse. This means, the test will still pass even if rails api is not running. Confirm this is indeed the case here.
 
-Below is the whole code, explore the commented out code as well.
+Below is the whole code, explore the commented code as well. It is another way of doing the same steps.
 
 ```javascript
 //user_can_login.spec.js
@@ -199,7 +202,7 @@ describe('User can save data', () => {
         cy.get('input[placeholder=Age]').type('24');
         cy.contains('Result: Poor')
         cy.contains('24 y/o male running 1500 meters.')
-        cy.contains('Save entry').click()
+        cy.contains('Save entry')
 
     })
 })
@@ -235,7 +238,7 @@ Cypress.Commands.add("login", (email, password) => {
 })
 ```
 
-So, we define a command called `login` and define it's behaviour. This function takes `email` and `password` as arguments, and loggs in.
+So, we define a command called `login` and define it's behaviour. This function takes `email` and `password` as arguments, and logs in. We can create other custom commands this way to keep our code clean and dry! How neat!
 
 We can now refactor our `user_can_save_data.spec.js` 
 
@@ -248,11 +251,134 @@ We can now refactor our `user_can_save_data.spec.js`
 
 Awesome, isn't it! Looks much cleaner and to the point.
 
+Now it is time to save the data entry. Let's add a new step definition to the file, like this:
+
+```javascript
+//cypress/integration/user_can_save_data.spec.js
+ it('User can save entry', () => {
+        cy.server()
+        cy.route(
+            'POST',
+            'http://localhost:3000/api/v1/performance_data',
+            'fixture:save_entry.json'
+        )
+        cy.contains('Save entry').click();
+        cy.contains('Your entry was saved')
+    })
+```
+
+So can you guess what happens next? That's right we have to stub another API call again! For the response we should create another fixture file.
+
+`cypress/fixtures/save_entry.json`
+
+```json
+{
+    "message": "all good"
+}
+```
+
+Finally the only functionality to test. Let's stub out the historical data that we fetch from our API.
+Add the following step to the test file:
+
+```javascript
+//cypress/integration/user_can_save_data.spec.js
+it('User can see past entries', () => {
+        cy.server()
+        cy.route(
+            'GET',
+            'http://localhost:3000/api/v1/performance_data',
+            'fixture:fetch_saved_entries.json'
+        )
+        cy.contains('Show past entries').click();
+        cy.get(':nth-child(1) > .chartjs-render-monitor')
+        cy.get(':nth-child(2) > .chartjs-render-monitor')
+        cy.contains('Hide past entries').click()
+        cy.get(':nth-child(1) > .chartjs-render-monitor').should('not.exist')
+        cy.get(':nth-child(2) > .chartjs-render-monitor').should('not.exist')
+    })
+```
+
+And add the following fixture file:
+
+`cypress/fixtures/fetch_saved_entries.json`
+
+```json
+{
+    "entries": [{
+        "created_at": "2019-03-15T11:06:18.199Z",
+        "data": {
+            "age": "24",
+            "gender": "male",
+            "message": "Poor",
+            "distance": "1500"
+        },
+        "id": 1 ,
+        "updated_at": "2019-03-15T11:06:18.199Z",
+        "user_id": 1
+    }]
+}
+```
+
+Adding everything together here how it should look like:
+
+```javascript
+//cypress/integration/user_can_save_data.spec.js
+describe('User can save data', () => {
+    it('User logs in and input data', () => {
+        cy.login('user@mail.com', 'password');
+        cy.get('input[placeholder=Distance]').type('1500');
+        cy.get('.ui > .dropdown').click();
+        cy.contains('Male').click();
+        cy.get('input[placeholder=Age]').type('24');
+        cy.contains('Result: Poor')
+        cy.contains('24 y/o male running 1500 meters.')
+        cy.contains('Save entry')
+    })
+    it('User can save entry', () => {
+        cy.server()
+        cy.route(
+            'POST',
+            'http://localhost:3000/api/v1/performance_data',
+            'fixture:save_entry.json'
+        )
+        cy.contains('Save entry').click();
+        cy.contains('Your entry was saved')
+    })
+    it('User can see past entries', () => {
+        cy.server()
+        cy.route(
+            'GET',
+            'http://localhost:3000/api/v1/performance_data',
+            'fixture:fetch_saved_entries.json'
+        )
+        cy.contains('Show past entries').click();
+        cy.get(':nth-child(1) > .chartjs-render-monitor')
+        cy.get(':nth-child(2) > .chartjs-render-monitor')
+        cy.contains('Hide past entries').click()
+        cy.get(':nth-child(1) > .chartjs-render-monitor').should('not.exist')
+        cy.get(':nth-child(2) > .chartjs-render-monitor').should('not.exist')
+    })
+})
+```
+
+There is another support file that we have not explored:
+`cypress/support/index.js`
+
+This file let's you group your tests. For instance you can add a step like this:
+
+```javascript
+beforeEach(function () {
+  cy.log('I run before every test in every spec file!!!!!!')
+})
+```
+
+This file allows you to refactor further and keep your code even more cleaned up.
+
 ## Finally...
 
 Cypress is a very easy-to-use e2e testing framework. But it is opinionated, and has certain restrictions.
 
-We hope you will explore this tool in much more detailed manner and understand benefits, restrictions and most importantly, how to use it to your advantage while writing clean,DRY code.
+We hope you will explore this tool in much more detailed manner and understand benefits, restrictions and most importantly, how to use it to your advantage while writing clean, DRY code.
 
 ----
 Authors: [Aditya](https://github.com/kianaditya) and [Greg](https://github.com/GergKllai1)

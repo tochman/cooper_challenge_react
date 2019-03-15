@@ -7,7 +7,7 @@ describe('User can save data', () => {
         cy.get('input[placeholder=Age]').type('24');
         cy.contains('Result: Poor')
         cy.contains('24 y/o male running 1500 meters.')
-        cy.contains('Save entry').click()
+        cy.contains('Save entry')
     })
     it('User can save entry', () => {
         cy.server()
