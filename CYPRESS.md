@@ -54,7 +54,7 @@ it('visits the site', () => {
 })
 ```
 
-Remember - all it blocks go inside the describe.
+Remember - all *it* blocks go inside the describe.
 
 Before we run our tests, we need to keep our localhost active by `npm start`.
 
@@ -104,9 +104,10 @@ it('User can login successfully',() => {
     ... // our test code
 })
 ```
+
 Now if you are wondering how you should stub the API response, cypress has a pretty user friendly way of getting you that information:
 
-![](api_response.gif)
+![api_reponse.gif](api_response.gif)
 
 `/fixtures/login.json` looks like this.
 
@@ -127,9 +128,9 @@ Now if you are wondering how you should stub the API response, cypress has a pre
 
 This requires a bit of explanation.
 
- `cy.server()` will launch a server which will replace all the API calls. We then need to define all relevant route reponses (body + headers).
+`cy.server()` will launch a server which will replace all the API calls. We then need to define all relevant route reponses (body + headers).
 
-We can add all the information in here, but since reponses can be really big, we move them to fixtures and call the files in our tests.
+We can add all the reponse information in route definition itself, but since reponses can be really big, we move them to fixtures and call the files in our tests.
 
 Now if we relaunch cypress and run the tests, a console check will show us that we have successfully stubbed the API reponse. This means, the test will still pass even if rails api is not running. Confirm this is indeed the case here.
 
@@ -267,7 +268,7 @@ Now it is time to save the data entry. Let's add a new step definition to the fi
     })
 ```
 
-So can you guess what happens next? That's right we have to stub another API call again! For the response we should create another fixture file.
+So can you guess what happens next? That's right! we have to stub another API call again! For the response we should create another fixture file.
 
 `cypress/fixtures/save_entry.json`
 
@@ -277,7 +278,7 @@ So can you guess what happens next? That's right we have to stub another API cal
 }
 ```
 
-Finally the only functionality to test. Let's stub out the historical data that we fetch from our API.
+Finally the only functionality to test is fetching historical data and showing fancy graphs. Let's stub out the historical data that we fetch from our API.
 Add the following step to the test file:
 
 ```javascript
@@ -319,7 +320,7 @@ And add the following fixture file:
 }
 ```
 
-Adding everything together here how it should look like:
+After putting all pieces together, it should look like this:
 
 ```javascript
 //cypress/integration/user_can_save_data.spec.js
