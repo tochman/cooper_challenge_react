@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const apiUrl = "https://ca-cooper-api-2019.herokuapp.com//api/v1";
-// const apiUrl = "http://localhost:3000/api/v1";
+// const apiUrl = "https://ca-cooper-api-2019.herokuapp.com//api/v1";
+const apiUrl = "http://localhost:3000/api/v1";
 
 const authenticate = async (email, password) => {
   const path = apiUrl + "/auth/sign_in";
@@ -32,7 +32,8 @@ const storeAuthHeaders = ({ headers }) => {
         client: client,
         access_token: accessToken,
         expiry: expiry,
-        token_type: "Bearer"
+        token_type: "Bearer",
+        Accept: 'application/json'
       })
     );
 

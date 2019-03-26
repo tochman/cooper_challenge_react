@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "chart.js": "^2.7.3",
+    "cypress": "^3.1.5",
     "react": "^16.8.3",
     "react-chartjs-2": "^2.7.4",
     "react-dom": "^16.8.3",
@@ -15,7 +16,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "features": "jest -c jest.config.js"
+    "features": "jest -c jest.config.js",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
   },
   "eslintConfig": {
     "extends": "react-app"
